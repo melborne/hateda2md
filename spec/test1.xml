@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diary>
+<day date="2012-03-01" title="hello">
+<body>
+*p1*Title
+line1
+line2
+line3
+**SubTitle
+line4
+
+</body>
+</day>
+<day date="2012-04-01" title="">
+<body>
+*p1*Title1
+line1
+line2
+line3
+
+*p2*Title2
+line4
+line5
+
+*123*タイトル3
+ライン１
+ライン２
+ライン３
+</body>
+</day>
+<day date="2012-04-04" title="">
+<body>
+*1135046820*Title1
+
+content
+**SubTitle1
+line1
+line2
+**SubTitle2
+line3
++list1
++list2
+++list2-1
+++list2-2
+
+***SubSubTitle
+line4
+-list1
+-list2
+-list3
+
+http://arena.nikkeibp.co.jp/rev/20051124/114391/index.shtml
+
+asin:B000BGEAR2:image:small
+asin:B000BGEAR2:title
+
+[http://local.google.co.jp/maps?q=%E6%98%AD%E6%96%87%E7%A4%BE&amp;near=%E5%8D%83%E4%BB%A3%E7%94%B0%E5%8C%BA%E9%BA%B9%E7%94%BA%EF%BC%93&amp;btnG=%E6%A4%9C%E7%B4%A2&amp;sll=36.562600,136.362305&amp;sspn=23.257402,31.684570&amp;t=&amp;hl=ja&amp;cid=35684108,139738742,6343705222926448571&amp;li=lmd&amp;z=0:title]
+Google local
+
+
+[http://earth.google.com/:title]
+
+</body>
+</day>
+<day date="2012-05-16" title="">
+<body>
+*p1*RubyでText Dollarを解く-CodeEval
+なんか想像以上に手こずったよ^^;
+case式内が見苦しい..
+もっと簡単なやり方あるんだろうな
+Integer#dollarizeを定義してみた
+
+
+数字を英語のドル表記に変換
+&lt;script src=&quot;https://gist.github.com/1697463.js?file=print_check.rb&quot;&gt;&lt;/script&gt;
+
+</body>
+</day>
+<day date="2012-05-18" title="">
+<body>
+*p1*RubyでLevenshtein Distanceを解く-CodeEval
+できません..
+アルゴリズム的にはできてるんだけど(('causes'の解答が一致した))
+答えを得るのに1時間とかorz..
+5秒で答えなきゃいけないのに
+あとグローバル変数を使ってしまった
+
+
+どうも高速化は苦手です
+そこに注力する気がなかなか起きない..
+
+[http://d.hatena.ne.jp/keyesberry/20120211/p1:title=RubyのEnumerable#mapをもっと便利にしたいよ - hp12c]
+
+&gt;|ruby|
+module Enumerable
+  def mapp(op=nil, *args, &amp;blk)
+    op ? map { |e| op.intern.to_proc[e, *args]} : map(&amp;blk)
+  end
+end
+
+langs = [&quot;Ruby&quot;, &quot;Python&quot;, &quot;Lisp&quot;, &quot;Haskell&quot;]
+langs.mapp(:+, 'ist') # =&gt; [&quot;Rubyist&quot;, &quot;Pythonist&quot;, &quot;Lispist&quot;, &quot;Haskellist&quot;]
+
+[1, 2, 3].mapp(:+, 10) # =&gt; [11, 12, 13]
+
+(1..5).mapp(:**, 2) # =&gt; [1, 4, 9, 16, 25]
+
+[[1,2,3,4], [5,6,7,8], [9,10,11,12]].mapp(:last, 2) # =&gt; [[3, 4], [7, 8], [11, 12]]
+
+[&quot;ruby&quot;, &quot;python&quot;, &quot;lisp&quot;, &quot;haskell&quot;].mapp(:[], -2, 2) # =&gt; [&quot;by&quot;, &quot;on&quot;, &quot;sp&quot;, &quot;ll&quot;]
+||&lt;
+
+レーベンシュタイン距離が1の語同士をfriendとして
+与えられた辞書におけるhelloの語から始まる
+friendの輪に含まれるすべての語の数を答える
+&lt;script src=&quot;https://gist.github.com/1697463.js?file=levenshtein_distance.rb&quot;&gt;&lt;/script&gt;
+
+&gt;&gt;
+それはここまで来たらもうmappは
+要らないんじゃないかってことなんだ
+&lt;&lt;
+</body>
+</day>
+
+
+
+</diary>
