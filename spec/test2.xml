@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diary>
+<day date="2012-03-01" title="hello">
+<body>
+*p1*Title
+line1
+line2
+line3
+**SubTitle
+line4
+
+</body>
+</day>
+<day date="2012-04-01" title="">
+<body>
+*p1*Title1
+line1
+line2
+line3
+
+*p2*Title2
+line4
+line5
+</body>
+</day>

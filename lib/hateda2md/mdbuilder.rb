@@ -17,6 +17,15 @@ class HateDa::MdBuilder
       HateDa::Entry[date, body, mdbody, title]
     end
   end
+
+  def set(item, *args)
+    entries.each { |ent| ent.set item, *args }
+  end
+  
+  def filter(pattern, opt={}, &replace)
+    entries.each { |ent| ent.filter(pattern, opt, &replace) }
+  end
+
   
   def run
     @entries.each do |entry|
