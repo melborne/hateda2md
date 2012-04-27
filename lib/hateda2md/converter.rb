@@ -19,6 +19,11 @@ module HateDa::Converter
     @gf.stocks if @gf
   end
   
+  def filter(pattern, opt={}, &replace)
+    @gf ||= GsubFilter.new
+    @gf.filter(pattern, opt, &replace)
+  end
+  
   private
   def SYM(key)
     {h1:'#',h2:'##',h3:'###',h4:'####',h5:'#####'}[key]
@@ -148,10 +153,4 @@ module HateDa::Converter
        "{% gist #{md[1]} #{md[2]} %}"
     end
   end
-  
-  def filter(pattern, opt={}, &replace)
-    @gf ||= GsubFilter.new
-    @gf.filter(pattern, opt, &replace)
-  end
-  
 end
