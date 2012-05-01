@@ -3,7 +3,12 @@ require "gsub_filter"
 require "uri"
 
 module HateDa::Converter
+  class NoFilterError < StandardError; end
+  
   def set(item, *args)
+    unless HateDa::Converter.pre_defined_filters(true).include?(item)
+      raise NoFilterError, "#{item} does not pre-defined."
+    end
     send item, *args
   end
   
@@ -22,6 +27,11 @@ module HateDa::Converter
   def filter(pattern, opt={}, &replace)
     @gf ||= GsubFilter.new
     @gf.filter(pattern, opt, &replace)
+  end
+
+  def self.pre_defined_filters(aliases=false)
+    als = aliases ? [] : [:header, :subheader, :subsubheader, :ul, :ol]
+    private_instance_methods(false) - [:SYM] - als
   end
   
   private
@@ -85,7 +95,7 @@ module HateDa::Converter
 
   def super_pre
     filter(/^>\|(\w+)?\|/) do |md|
-      lang = md[1].empty? ? '' : "#{md[1]} "
+      lang = md[1] ? "#{md[1]} " : ""
       "{% highlight #{lang}%}"
     end
 
@@ -94,8 +104,8 @@ module HateDa::Converter
 
   def footnote
     filter(/\(\((.*?)\)\)/) do |md, st|  
-        "{% fn_ref #{st[:footnotes].size+1} %}"
-        .tap { st[:footnotes] << "{% fn #{md[1]} %}" }
+      "{% fn_ref #{st[:footnotes].size+1} %}"
+      .tap { st[:footnotes] << "{% fn #{md[1]} %}" }
     end
   end
 
@@ -111,24 +121,24 @@ module HateDa::Converter
     end
 
     filter(/\[(#{url})(?::title=?(.*))\]/) do |md|
-        t = md.captures.last
-        title = t.empty? ? ((st = stocks[:titles]) ? st.first : 'link') : t
-        "[#{title}](#{md[1]})"
+      t = md.captures.last
+      title = t.empty? ? ((st = stocks[:titles]) ? st.first : 'link') : t
+      "[#{title}](#{md[1]})"
     end
   end
 
   def amazon
     filter(/\[?(?:isbn|asin):(\w+)(?::(title|detail|image))?\]?/i) do |md|  
-        case md[2]
-        when 'title'
-          "{{ '#{md[1]}' | amazon_link }}"
-        when 'image'
-          "{{ '#{md[1]}' | amazon_medium_image }}"
-        when 'detail'
-          "{{ '#{md[1]}' | amazon_medium_image }}\n{{ '#{md[1]}' | amazon_link }} by {{ '#{md[1]}' | amazon_authors }}"
-        else
-          "{{ '#{md[1]}' | amazon_medium_image }}"
-        end
+      case md[2]
+      when 'title'
+        "{{ '#{md[1]}' | amazon_link }}"
+      when 'image'
+        "{{ '#{md[1]}' | amazon_medium_image }}"
+      when 'detail'
+        "{{ '#{md[1]}' | amazon_medium_image }}\n{{ '#{md[1]}' | amazon_link }} by {{ '#{md[1]}' | amazon_authors }}"
+      else
+        "{{ '#{md[1]}' | amazon_medium_image }}"
+      end
     end
   end
 
@@ -150,7 +160,14 @@ module HateDa::Converter
   def gist
     host = %r{https?://gist.github.com/}
     filter(/<script src=\"#{host}(\d+)\.js\?file=(.*?)\"><\/script>/) do |md|
-       "{% gist #{md[1]} #{md[2]} %}"
+      "{% gist #{md[1]} #{md[2]} %}"
+    end
+  end
+
+  def hatebu
+    url_r = URI.regexp(['http', 'https'])
+    filter(/\[(#{url_r}):bookmark\]/) do |md|
+      "{% hatebu #{md[1]} %}"
     end
   end
 end

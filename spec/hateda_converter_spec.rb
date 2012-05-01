@@ -30,6 +30,10 @@ EOS
       to_md(hdtext).should eql hdtext
     end
 
+    it "should raise error when set non-defined tags" do
+      ->{ set(:hello) }.should raise_error(HateDa::Converter::NoFilterError)
+    end
+
     context "header" do
       it "change a header" do
         hdtext = "*p1*title1\ncontent"
@@ -338,6 +342,15 @@ EOS
         hdtext = %{<script src="https://gist.github.com/2177656.js?file=gsub_filter.rb"></script>}
         md     = "{% gist 2177656 gsub_filter.rb %}"
         set :gist
+        to_md(hdtext).should eql md
+      end
+    end
+
+    context "hatebu" do
+      it "change hatena bookmark link to gist tag" do
+        hdtext = %{[http://d.hatena.ne.jp/keyesberry/20090318/p1:bookmark]}
+        md     = "{% hatebu http://d.hatena.ne.jp/keyesberry/20090318/p1 %}"
+        set :hatebu
         to_md(hdtext).should eql md
       end
     end
