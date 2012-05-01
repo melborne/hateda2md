@@ -44,6 +44,9 @@ module HateDa::Converter
       st[:titles] << md[1]
       "#{SYM(h)}#{md[1]}"
     end
+    filter(/^#.*$/, global:false) do |md, st|
+      st[:titles].size == 1 ? '' : md.to_s
+    end
   end
   alias :header :title
 
