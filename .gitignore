@@ -1,0 +1,7 @@
+.DS_Store
+*.log
+.sass-cache
+tmp/restart.txt
+.rvmrc
+*~
+
