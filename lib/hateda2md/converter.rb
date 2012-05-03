@@ -44,7 +44,7 @@ module HateDa::Converter
       st[:titles] << md[1]
       "#{SYM(h)}#{md[1]}"
     end
-    filter(/^#.*$/, global:false) do |md, st|
+    filter(/^#{SYM(h)}.*$/, global:false) do |md, st|
       st[:titles].size == 1 ? '' : md.to_s
     end
   end
@@ -98,8 +98,8 @@ module HateDa::Converter
 
   def super_pre
     filter(/^>\|(\w+)?\|/) do |md|
-      lang = md[1] ? "#{md[1]} " : ""
-      "{% highlight #{lang}%}"
+      lang = md[1] || "bash"
+      "{% highlight #{lang} %}"
     end
 
     filter(/^\|\|</) { "{% endhighlight %}" }
@@ -117,16 +117,23 @@ module HateDa::Converter
   end
 
   def link
-    url = URI.regexp(['http', 'https'])
+    url_r = URI.regexp(['http', 'https'])
 
-    filter(/(?:(?<=[ \(])|^)#{url}(?:(?=[ \)])|$)/) do |md|
+    filter(/(?:(?<=[ \(])|^)#{url_r}(?!\s%})(?:(?=[ \)])|$)/) do |md|
       "[#{md}](#{md})"
     end
 
-    filter(/\[(#{url})(?::title=?(.*))\]/) do |md|
+    filter(/\[(#{url_r})(?::title=?(.*?))\]/) do |md|
       t = md.captures.last
       title = t.empty? ? ((st = stocks[:titles]) ? st.first : 'link') : t
       "[#{title}](#{md[1]})"
+    end
+  end
+
+  def hatebu
+    url_r = URI.regexp(['http', 'https'])
+    filter(/\[(#{url_r}):bookmark\]/) do |md|
+      "{% hatebu #{md[1]} %}"
     end
   end
 
@@ -164,13 +171,6 @@ module HateDa::Converter
     host = %r{https?://gist.github.com/}
     filter(/<script src=\"#{host}(\d+)\.js\?file=(.*?)\"><\/script>/) do |md|
       "{% gist #{md[1]} #{md[2]} %}"
-    end
-  end
-
-  def hatebu
-    url_r = URI.regexp(['http', 'https'])
-    filter(/\[(#{url_r}):bookmark\]/) do |md|
-      "{% hatebu #{md[1]} %}"
     end
   end
 end

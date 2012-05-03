@@ -36,16 +36,16 @@ EOS
 
     context "header" do
       it "change a header" do
-        hdtext = "*p1*title1\ncontent"
-        md     = "#title1\ncontent"
+        hdtext = "*p1*title1\ncontent\n*p2*title2"
+        md     = "#title1\ncontent\n#title2"
         set :header
         to_md(hdtext).should eql md
-        stocks[:titles].should eql ['title1']
+        stocks[:titles].should eql ['title1', 'title2']
       end
 
       it "change a header by h3" do
-        hdtext = "*p1*title1\ncontent"
-        md     = "###title1\ncontent"
+        hdtext = "*p1*title1\ncontent\n*p2*title2\ncontent"
+        md     = "###title1\ncontent\n###title2\ncontent"
         set :header, :h3
         to_md(hdtext).should eql md
       end
@@ -94,10 +94,10 @@ EOS
       end
 
       it "change mixed title cases3" do
-        hdtext = "*p1*title\n***sstitle\ncontent\n**stit***le\nconten**t\n***sstitle"
+        hdtext = "*p1*title\n***sstitle\ncontent\n**stit***le\n*p2*title2\nconten**t\n***sstitle"
         set :title
         set :subtitle
-        md = "#title\n***sstitle\ncontent\n##stit***le\nconten**t\n***sstitle"
+        md = "#title\n***sstitle\ncontent\n##stit***le\n#title2\nconten**t\n***sstitle"
         to_md(hdtext).should eql md
       end
 
@@ -286,6 +286,7 @@ EOS
 sentence
 [http://www.abc.com/:title]
 sentence [http://www.efg.com/123_456:title=Title1] sentence
+*p3*Title Y
 sentence([https://www.xyz.co.jp/:title=Title no.2]),sen..
 http://mmm.ff.co.jp/
 EOS
@@ -294,6 +295,7 @@ EOS
 sentence
 [Title X](http://www.abc.com/)
 sentence [Title1](http://www.efg.com/123_456) sentence
+#Title Y
 sentence([Title no.2](https://www.xyz.co.jp/)),sen..
 [http://mmm.ff.co.jp/](http://mmm.ff.co.jp/)
 EOS
@@ -351,6 +353,14 @@ EOS
         hdtext = %{[http://d.hatena.ne.jp/keyesberry/20090318/p1:bookmark]}
         md     = "{% hatebu http://d.hatena.ne.jp/keyesberry/20090318/p1 %}"
         set :hatebu
+        to_md(hdtext).should eql md
+      end
+
+      it "change mixed case for hatebu link and regular link" do
+        hdtext = %{[http://d.hatena.ne.jp/keyesberry/20090318/p1:title='hello'][http://d.hatena.ne.jp/keyesberry/20090318/p1:bookmark]}
+        md     = "['hello'](http://d.hatena.ne.jp/keyesberry/20090318/p1){% hatebu http://d.hatena.ne.jp/keyesberry/20090318/p1 %}"
+        set :hatebu
+        set :link
         to_md(hdtext).should eql md
       end
     end
