@@ -1,5 +1,6 @@
 # encoding: UTF-8
 require_relative "spec_helper"
+require "fileutils"
 
 describe HateDa::MdBuilder do
   before(:each) do
@@ -33,7 +34,7 @@ describe HateDa::MdBuilder do
     end
 
     it "set markdowned body to mdbody of entry" do
-      md = "#Title\nline1\nline2\nline3\n##SubTitle\nline4"
+      md = "\nline1\nline2\nline3\n##SubTitle\nline4"
       a_entry = @mdb.entries.first
       a_entry.set :title
       a_entry.set :subtitle
@@ -58,7 +59,7 @@ describe HateDa::MdBuilder do
     end
 
     it "set title with set method" do
-      md1 = "#Title\nline1\nline2\nline3\n**SubTitle\nline4"
+      md1 = "\nline1\nline2\nline3\n**SubTitle\nline4"
       md2 = "#Title1\nline1\nline2\nline3\n\n#Title2\nline4\nline5"
       @mdb2.set :title
       @mdb2.run
@@ -84,6 +85,27 @@ describe HateDa::MdBuilder do
       entries.each do |ent, md|
         ent.ent_mdbody.should eql md
       end
+    end
+  end
+
+  context "run option" do
+    it "run for top 2 entries" do
+      nilness = [false, false, true, true]
+      @mdb.run(0,2)
+      @mdb.entries.take(4).map { |ent| ent.ent_mdbody.nil? }.should eql nilness
+    end
+  end
+
+  context "save md data to files" do
+    it "save md to separate files" do
+      files = Dir['md/*']
+      FileUtils.rm(Dir['md/*']) unless files.empty?
+      num = 5
+      filters = @mdb.pre_defined_filters
+      filters.each { |f| @mdb.set f }
+      @mdb.run(0...num)
+      @mdb.save_to_files
+      Dir['md/*'].size.should eql num
     end
   end
 end

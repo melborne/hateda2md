@@ -40,9 +40,9 @@ class HateDa::MdBuilder
     HateDa::Converter.pre_defined_filters(alias_flag)
   end
   
-  def run(limit=nil)
-    limit ||= entries.size
-    entries.take(limit).map do |entry|
+  def run(*range)
+    range = [0..-1] if range.empty?
+    entries[*range].map do |entry|
       md = entry.to_md(entry.ent_body)
       entry.ent_title = get_title(entry) if entry.ent_title.empty?
       entry.ent_mdbody = md
@@ -58,7 +58,7 @@ class HateDa::MdBuilder
         File.open(path, 'w') do |f|
           f.puts header(ent.ent_title, ent.ent_date)
           f.puts ent.ent_mdbody
-          f.puts footnote(ent.stocks[:footnote]) unless ent.stocks[:footnote].empty?
+          f.puts footnotes(ent.stocks[:footnotes]) unless ent.stocks[:footnotes].empty?
         end
       end
     end
@@ -76,10 +76,11 @@ class HateDa::MdBuilder
   end
 
   def header(title, date)
+    title = title.gsub(/['"`]/, '')
     ~<<-EOS
     ---
     layout: post
-    title: #{title}
+    title: "#{title}"
     date: #{date}
     comments: true
     categories:
@@ -91,9 +92,9 @@ class HateDa::MdBuilder
   end
 
   def footnotes(fnotes)
-    notes = fnotes.map { |note| "  #{note}" }.join("\n")
+    notes = fnotes.map { |note| "#{note}" }.join("\n    ")
     ~<<-EOS
-    
+
     {% footnotes %}
     #{notes}
     {% endfootnotes %}
