@@ -40,9 +40,11 @@ Or install it yourself as:
     mdb.save_to_files
 
 This process create several markdown files under `md` directory.
+
 本処理により`md`ディレクトリ以下に、複数のmarkdownファイルが生成されます。
 
 To set all pre-defined filters, you can call `MdBuilder#pre_defined_filters` or `HateDa::Converter.pre_defined_filters` method.
+
 すべての定義済みフィルタをセットするには、`MdBuilder#pre_defined_filters`または`HateDa::Converter.pre_defined_filters`メソッドを呼びます。
 
     # read all pre-defined filters
@@ -54,6 +56,7 @@ To set all pre-defined filters, you can call `MdBuilder#pre_defined_filters` or 
     filters.each { |f| mdb.set f }
 
 You can define filters.
+
 独自フィルタを定義できます。
 
     # define a filter to convert wikipedia hatena tag to a correspond liquid tag
@@ -64,6 +67,7 @@ You can define filters.
     end
 
 `MdBuilder#run` can take parameters for selecting entries to be converted.
+
 `MdBuilder#run`に引数を渡すことで、特定のエントリだけを変換することができます。
 
     # convert only #20 entry
