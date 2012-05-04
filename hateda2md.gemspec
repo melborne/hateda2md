@@ -17,5 +17,6 @@ Gem::Specification.new do |gem|
   gem.version       = Hateda2md::VERSION
   gem.required_ruby_version = '>=1.9.2'
   gem.add_development_dependency 'rspec'
+  gem.add_dependency 'nokogiri'
   gem.add_dependency 'gsub_filter'
 end
