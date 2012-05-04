@@ -50,12 +50,13 @@ class HateDa::MdBuilder
     end
   end
 
-  def save_to_files(dir='md', ext='md')
+  def save_to_files(opt={})
+    opt = {dir:'md', ext:'md'}.update(opt)
     md_entries = entries.select { |ent| ent.ent_mdbody }
     unless md_entries.empty?
-      Dir.mkdir(dir) unless Dir.exist?(dir)
+      Dir.mkdir(opt[:dir]) unless Dir.exist?(opt[:dir])
       md_entries.each do |ent|
-        path = "#{dir}/#{ent.ent_date}-#{title_for_file(ent.ent_title)}.#{ext}"
+        path = "#{opt[:dir]}/#{ent.ent_date}-#{title_for_file(ent.ent_title)}.#{opt[:ext]}"
         File.open(path, 'w') do |f|
           f.puts header(ent.ent_title, ent.ent_date)
           f.puts ent.ent_mdbody
