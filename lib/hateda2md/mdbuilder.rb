@@ -46,6 +46,7 @@ class HateDa::MdBuilder
       md = entry.to_md(entry.ent_body)
       entry.ent_title = get_title(entry) if entry.ent_title.empty?
       entry.ent_mdbody = md
+      entry
     end
   end
 
