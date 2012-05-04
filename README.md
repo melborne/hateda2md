@@ -49,7 +49,8 @@ To set all pre-defined filters, you can call `MdBuilder#pre_defined_filters` or 
 
     # read all pre-defined filters
     # すべての定義済みフィルタを呼ぶ
-    filters = mdb.pre_defined_filters # => [:title, :subtitle, :subsubtitle, :order_list, :unorder_list, :blockquote, :pre, :super_pre, :footnote, :br, :link, :hatebu, :amazon, :youtube, :image, :gist]
+    filters = mdb.pre_defined_filters
+    # => [:title, :subtitle, :subsubtitle, :order_list, :unorder_list, :blockquote, :pre, :super_pre, :footnote, :br, :link, :hatebu, :amazon, :youtube, :image, :gist]
 
     # set all the pre-defined filters
     # すべての定義済みフィルタをセットする
