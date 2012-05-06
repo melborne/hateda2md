@@ -130,10 +130,14 @@ module HateDa::Converter
     end
   end
 
-  def hatebu
+  def hatebu(liquid=true)
     url_r = URI.regexp(['http', 'https'])
     filter(/\[(#{url_r}):bookmark\]/) do |md|
-      "{% hatebu #{md[1]} %}"
+      if liquid
+        "{% hatebu #{md[1]} %}"
+      else
+        hatebu_html(md[1])
+      end
     end
   end
 
@@ -171,6 +175,17 @@ module HateDa::Converter
     host = %r{https?://gist.github.com/}
     filter(/<script src=\"#{host}(\d+)\.js\?file=(.*?)\"><\/script>/) do |md|
       "{% gist #{md[1]} #{md[2]} %}"
+    end
+  end
+
+  def hatebu_html(md)
+    url, title = md.to_s.match(/(https?:\/\/\S+)(.*)/){ [$1, $2] }
+    bm_url = %{<a href="http://b.hatena.ne.jp/entry/#{url}" class="http-bookmark" target="_blank"><img src="http://b.hatena.ne.jp/entry/image/#{url}" alt="" class="http-bookmark"></a>}
+
+    unless title.nil?
+      %{<a href="#{url}" target="_blank">#{title.strip} </a>} + bm_url
+    else
+      bm_url
     end
   end
 end
