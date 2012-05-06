@@ -31,20 +31,21 @@ module HateDa::Converter
 
   def self.pre_defined_filters(aliases=false)
     als = aliases ? [] : [:header, :subheader, :subsubheader, :ul, :ol]
-    private_instance_methods(false) - [:SYM] - als
+    excludes = ->m{ als.include?(m) || m.to_s.start_with?('_') }
+    private_instance_methods(false).reject(&excludes)
   end
   
   private
-  def SYM(key)
+  def _SYM(key)
     {h1:'#',h2:'##',h3:'###',h4:'####',h5:'#####'}[key]
   end
 
   def title(h=:h1)
     filter(/\*p?\d+\*(.*)$/) do |md, st|
       st[:titles] << md[1]
-      "#{SYM(h)}#{md[1]}"
+      "#{_SYM(h)}#{md[1]}"
     end
-    filter(/^#{SYM(h)}.*$/, global:false) do |md, st|
+    filter(/^#{_SYM(h)}.*$/, global:false) do |md, st|
       st[:titles].size == 1 ? '' : md.to_s
     end
   end
@@ -53,7 +54,7 @@ module HateDa::Converter
   def subtitle(h=:h2)
     filter(/^\*\*((?!\*).*)$/) do |md, st|
       st[:subtitles] << md[1]
-      "#{SYM(h)}#{md[1]}"
+      "#{_SYM(h)}#{md[1]}"
     end
   end
   alias :subheader :subtitle
@@ -61,7 +62,7 @@ module HateDa::Converter
   def subsubtitle(h=:h3)
     filter(/^\*\*\*((?!\*).*)$/) do |md, st|
       st[:subsubtitles] << md[1]
-      "#{SYM(h)}#{md[1]}"
+      "#{_SYM(h)}#{md[1]}"
     end
   end
   alias :subsubheader :subsubtitle
@@ -136,7 +137,7 @@ module HateDa::Converter
       if liquid
         "{% hatebu #{md[1]} %}"
       else
-        hatebu_html(md[1])
+        _hatebu_html(md[1])
       end
     end
   end
@@ -161,7 +162,7 @@ module HateDa::Converter
       if liquid
         "{% youtube #{md[1]} %}"
       else
-        youtube_html(md)
+        _youtube_html(md)
       end
     end
   end
@@ -181,12 +182,12 @@ module HateDa::Converter
       if liquid
         "{% gist #{md[1]} #{md[2]} %}"
       else
-        gist_html(md)
+        _gist_html(md)
       end
     end
   end
 
-  def hatebu_html(md)
+  def _hatebu_html(md)
     url, title = md.to_s.match(/(https?:\/\/\S+)(.*)/){ [$1, $2] }
     bm_url = %{<a href="http://b.hatena.ne.jp/entry/#{url}" class="http-bookmark" target="_blank"><img src="http://b.hatena.ne.jp/entry/image/#{url}" alt="" class="http-bookmark"></a>}
 
@@ -197,11 +198,11 @@ module HateDa::Converter
     end
   end
 
-  def gist_html(md)
+  def _gist_html(md)
     %{<div><script src="https://gist.github.com/#{md[1]}.js?file=#{md[2]}"></script></div>%}
   end
 
-  def youtube_html(md)
+  def _youtube_html(md)
     %{<iframe width="560" height="420" src="http://www.youtube.com/embed/#{md[1]}?color=white&theme=light"></iframe>}
   end
 end
