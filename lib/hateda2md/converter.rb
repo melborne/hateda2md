@@ -156,9 +156,13 @@ module HateDa::Converter
     end
   end
 
-  def youtube
+  def youtube(liquid=true)
     filter(/[\(\[]?\s*https?:\/\/.*?youtube.*?\?v=([a-zA-Z0-9_-]+):movie\s*[\]\)]?/) do |md|
-      "{% youtube #{md[1]} %}"
+      if liquid
+        "{% youtube #{md[1]} %}"
+      else
+        youtube_html(md)
+      end
     end
   end
 
@@ -171,10 +175,14 @@ module HateDa::Converter
     end
   end
 
-  def gist
+  def gist(liquid=true)
     host = %r{https?://gist.github.com/}
     filter(/<script src=\"#{host}(\d+)\.js\?file=(.*?)\"><\/script>/) do |md|
-      "{% gist #{md[1]} #{md[2]} %}"
+      if liquid
+        "{% gist #{md[1]} #{md[2]} %}"
+      else
+        gist_html(md)
+      end
     end
   end
 
@@ -187,5 +195,13 @@ module HateDa::Converter
     else
       bm_url
     end
+  end
+
+  def gist_html(md)
+    %{<div><script src="https://gist.github.com/#{md[1]}.js?file=#{md[2]}"></script></div>%}
+  end
+
+  def youtube_html(md)
+    %{<iframe width="560" height="420" src="http://www.youtube.com/embed/#{md[1]}?color=white&theme=light"></iframe>}
   end
 end
