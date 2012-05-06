@@ -7,18 +7,18 @@ include HateDa::Converter
 describe HateDa::Converter do
   context "pass a text to to_md method" do
     before(:each) do
-      @hdtext = <<EOS
-*p1*title1
-content1
-content2
-**subtitle1
-content3
-content4
-**subtitle2
-contetn5
-*123*title2
+      @hdtext = ~<<-EOS
+      *p1*title1
+      content1
+      content2
+      **subtitle1
+      content3
+      content4
+      **subtitle2
+      contetn5
+      *123*title2
 
-EOS
+      EOS
     end
     
     after(:each) do
@@ -119,29 +119,29 @@ EOS
       end
 
       it "change nested ordered list" do
-        hdtext = <<EOS
-+item1
-++item1-1
-++item1-2
-+item2
-+item3
-++item3-1
-+++item3-1-1
-+++item3-1-2
-++item3-2
-EOS
+        hdtext = ~<<-EOS
+        +item1
+        ++item1-1
+        ++item1-2
+        +item2
+        +item3
+        ++item3-1
+        +++item3-1-1
+        +++item3-1-2
+        ++item3-2
+        EOS
         
-        md = <<EOS
-1. item1
-    1. item1-1
-    1. item1-2
-1. item2
-1. item3
-    1. item3-1
-        1. item3-1-1
-        1. item3-1-2
-    1. item3-2
-EOS
+        md = ~<<-EOS
+        1. item1
+            1. item1-1
+            1. item1-2
+        1. item2
+        1. item3
+            1. item3-1
+                1. item3-1-1
+                1. item3-1-2
+            1. item3-2
+        EOS
         set :order_list
         to_md(hdtext).should eql md
       end
@@ -154,29 +154,29 @@ EOS
       end
 
       it "change nested unordered list" do
-        hdtext = <<EOS
--item1
---item1-1
---item1-2
--item2
--item3
---item3-1
----item3-1-1
----item3-1-2
---item3-2
-EOS
+        hdtext = ~<<-EOS
+        -item1
+        --item1-1
+        --item1-2
+        -item2
+        -item3
+        --item3-1
+        ---item3-1-1
+        ---item3-1-2
+        --item3-2
+        EOS
 
-        md = <<EOS
-- item1
-    - item1-1
-    - item1-2
-- item2
-- item3
-    - item3-1
-        - item3-1-1
-        - item3-1-2
-    - item3-2
-EOS
+        md = ~<<-EOS
+        - item1
+            - item1-1
+            - item1-2
+        - item2
+        - item3
+            - item3-1
+                - item3-1-1
+                - item3-1-2
+            - item3-2
+        EOS
         set :unorder_list
         to_md(hdtext).should eql md
       end
@@ -186,58 +186,58 @@ EOS
 
     context "pre" do
       it "change blockquote '>> <<' to '>'" do
-        hdtext = <<EOS
->>
-blockquoted
-blockquoted
-blockquoted
-<<
-EOS
-      md = <<EOS
+        hdtext = ~<<-EOS
+        >>
+        blockquoted
+        blockquoted
+        blockquoted
+        <<
+        EOS
+        md = ~<<-EOS
 
-> blockquoted
-> blockquoted
-> blockquoted
+        > blockquoted
+        > blockquoted
+        > blockquoted
 
-EOS
+        EOS
         set :blockquote
         to_md(hdtext).should eql md
       end
 
       it "change pre '>|' to 4 spaces" do
-        hdtext = <<EOS
->|
-blockquoted
-blockquoted
-blockquoted
-|<
-EOS
-      md = <<EOS
+        hdtext = ~<<-EOS
+        >|
+        blockquoted
+        blockquoted
+        blockquoted
+        |<
+        EOS
+        md = <<-EOS
 
     blockquoted
     blockquoted
     blockquoted
 
-EOS
+        EOS
         set :pre
         to_md(hdtext).should eql md
       end
 
       it "change super_pre '>|type|' to highlight tag" do
-        hdtext = <<EOS
->|ruby|
-def hello(name)
-  "hello, \#{name}!"
-end
-||<
-EOS
-      md = <<EOS
-{% highlight ruby %}
-def hello(name)
-  "hello, \#{name}!"
-end
-{% endhighlight %}
-EOS
+        hdtext = ~<<-EOS
+        >|ruby|
+        def hello(name)
+          "hello, \#{name}!"
+        end
+        ||<
+        EOS
+        md = ~<<-EOS
+        {% highlight ruby %}
+        def hello(name)
+          "hello, \#{name}!"
+        end
+        {% endhighlight %}
+        EOS
         set :super_pre
         to_md(hdtext).should eql md
       end
@@ -264,41 +264,41 @@ EOS
 
     context "link" do
       it "change a url to a link" do
-        hdtext = <<EOS
-sentence
-http://www.abc.com
-sentence http://www.efg.com/123_456 sentence
-sentence(https://www.xyz.co.jp),sen..
-EOS
-        md     = <<EOS
-sentence
-[http://www.abc.com](http://www.abc.com)
-sentence [http://www.efg.com/123_456](http://www.efg.com/123_456) sentence
-sentence([https://www.xyz.co.jp](https://www.xyz.co.jp)),sen..
-EOS
+        hdtext = ~<<-EOS
+        sentence
+        http://www.abc.com
+        sentence http://www.efg.com/123_456 sentence
+        sentence(https://www.xyz.co.jp),sen..
+        EOS
+        md     = ~<<-EOS
+        sentence
+        [http://www.abc.com](http://www.abc.com)
+        sentence [http://www.efg.com/123_456](http://www.efg.com/123_456) sentence
+        sentence([https://www.xyz.co.jp](https://www.xyz.co.jp)),sen..
+        EOS
         set :link
         to_md(hdtext).should eql md
       end
 
       it "change a url with title to a link" do
-        hdtext = <<EOS
-*p1*Title X
-sentence
-[http://www.abc.com/:title]
-sentence [http://www.efg.com/123_456:title=Title1] sentence
-*p3*Title Y
-sentence([https://www.xyz.co.jp/:title=Title no.2]),sen..
-http://mmm.ff.co.jp/
-EOS
-        md     = <<EOS
-#Title X
-sentence
-[Title X](http://www.abc.com/)
-sentence [Title1](http://www.efg.com/123_456) sentence
-#Title Y
-sentence([Title no.2](https://www.xyz.co.jp/)),sen..
-[http://mmm.ff.co.jp/](http://mmm.ff.co.jp/)
-EOS
+        hdtext = ~<<-EOS
+        *p1*Title X
+        sentence
+        [http://www.abc.com/:title]
+        sentence [http://www.efg.com/123_456:title=Title1] sentence
+        *p3*Title Y
+        sentence([https://www.xyz.co.jp/:title=Title no.2]),sen..
+        http://mmm.ff.co.jp/
+        EOS
+        md     = ~<<-EOS
+        #Title X
+        sentence
+        [Title X](http://www.abc.com/)
+        sentence [Title1](http://www.efg.com/123_456) sentence
+        #Title Y
+        sentence([Title no.2](https://www.xyz.co.jp/)),sen..
+        [http://mmm.ff.co.jp/](http://mmm.ff.co.jp/)
+        EOS
         set :title
         set :link
         to_md(hdtext).should eql md
