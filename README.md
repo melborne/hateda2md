@@ -24,8 +24,8 @@ Or install it yourself as:
 
     mdb = HateDa::MdBuilder.new('hatena-diary.xml')
 
-    # set several pre-defined filters
-    # 幾つかの定義済みフィルタをセットする
+    # set pre-defined filters
+    # 定義済みフィルタをセットする
     mdb.set :title
     mdb.set :subtitle
     mdb.set :link
@@ -56,9 +56,9 @@ To set all pre-defined filters, you can call `MdBuilder#pre_defined_filters` or 
     # すべての定義済みフィルタをセットする
     filters.each { |f| mdb.set f }
 
-You can define filters.
+You can define your filters using `MdBuilder#filter` method.
 
-独自フィルタを定義できます。
+`MdBuilder#filter`を使って、独自フィルタを定義できます。
 
     # define a filter to convert wikipedia hatena tag to a correspond liquid tag
     # はてな記法によるwikipediaタグをliquid tagに変換するフィルタを定義する
