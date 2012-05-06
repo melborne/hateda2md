@@ -56,6 +56,10 @@ To set all pre-defined filters, you can call `MdBuilder#pre_defined_filters` or 
     # すべての定義済みフィルタをセットする
     filters.each { |f| mdb.set f }
 
+Filters of super_pre, footnote, hatebu, amazon, youtube, gist are create a liquid tag. Only for hatebu, youtube, gist, you can select html code to be created, instead of liquid tag by passing false as its second parameter. 
+
+super_pre, footnote, hatebu, amazon, youtube, gistの各フィルタはliquid tagを生成します。hatebu, youtube, gistのフィルタに関しては、その第２引数にfalseを渡すことで、liquid tagに代えてhtmlコードを生成させることができます。
+
 You can define your filters using `MdBuilder#filter` method.
 
 `MdBuilder#filter`を使って、独自フィルタを定義できます。
