@@ -86,13 +86,13 @@ module HateDa::Converter
 
   def blockquote
     filter(/^>>\n(.*?)^<<$/m) do |md|
-      "\n" + md[1].lines.map { |line| "> #{line}" }.join
+      "\n" + md[1].gsub(/^.*$/, '> \0')
     end
   end
 
   def pre
     filter(/^>\|\n(.*?)^\|<$/m) do |md|
-      "\n" + md[1].lines.map { |line| "    #{line}" }.join
+      "\n" + md[1].gsub(/^.*$/, '    \0')
     end
   end
 
