@@ -19,6 +19,9 @@ Or install it yourself as:
     $ gem install hateda2md
 
 ## Usage
+First of all, you get `username.xml` file from export section of your Hatena Dairy Admin. Then process followings:
+
+最初に`username.xml`ファイル(はてなの日記データ形式)を、はてなダイアリーのエクスポート頁から取得します。そして次のように処理します。
 
     require "Hateda2md"
 
@@ -35,13 +38,13 @@ Or install it yourself as:
     # 変換を実行する
     mdb.run
 
-    # save converted data to separated markdown files correspond to each entry
-    # 変換後のデータを各エントリーに対応した複数のMarkdownファイルに保存する
+    # save converted data to separated markdown files correspond to each diary
+    # 変換後のデータを各日記に対応した複数のMarkdownファイルに保存する
     mdb.save_to_files
 
-This process create several markdown files under `md` directory.
+This process create several markdown files, which correspond to each diary, not each entry, under `md` directory. The filenames are constructed from date and title of each diary. Non-ASCII words are removed from the title part in the filename.
 
-本処理により`md`ディレクトリ以下に、複数のmarkdownファイルが生成されます。
+本処理により`md`ディレクトリ以下に、（各エントリではなく）各日記に対応した複数のmarkdownファイルが生成されます。そのファイル名は各日記の日付とタイトルで構成されます。ASCII以外の文字はファイル名のタイトル部分から除去されます。
 
 To set all pre-defined filters, you can call `MdBuilder#pre_defined_filters` or `HateDa::Converter.pre_defined_filters` method.
 
