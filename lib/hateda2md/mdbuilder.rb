@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require "nokogiri"
+require "rexml/document"
 
 class HateDa::MdBuilder
   attr_reader :entries
@@ -8,14 +8,16 @@ class HateDa::MdBuilder
   end
   
   def build_entries(filepath)
-    xml = Nokogiri::XML(open filepath)
-    xml.search('day').map do |ent|
-      date = ent.attributes['date'].value
-      body = ent.css('body').text.strip
+    xml = REXML::Document.new(open filepath)
+    res = []
+    xml.elements.each('diary/day') do |ent|
+      date = ent.attributes['date']
+      body = ent.elements['body'].text.strip
       mdbody = nil
-      title = ent.attributes['title'].value
-      HateDa::Entry[date, body, mdbody, title]
+      title = ent.attributes['title']
+      res << HateDa::Entry[date, body, mdbody, title]
     end
+    res
   end
 
   def set(item, *args)
@@ -33,7 +35,7 @@ class HateDa::MdBuilder
   def run(*range)
     range = [0..-1] if range.empty?
     entries[*range].map do |entry|
-      md = entry.to_md(entry.ent_body)
+      md = entry.to_md(entry.ent_body) # place this before use of get_title()
       entry.ent_title = get_title(entry) if entry.ent_title.empty?
       entry.ent_mdbody = md
       entry
